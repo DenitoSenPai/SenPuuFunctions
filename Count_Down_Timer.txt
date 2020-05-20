@@ -1,0 +1,62 @@
+Function Declaration 
+void Count_Down_Timer(int, int, int);
+void Count_Down_Timer ();
+
+Functions 
+void Count_Down_Timer(int hour, int minute, int second)
+{
+    for (;;) // Indefinet Loop 
+    {
+        if (hour == 0 && minute == 0 && second == 0)
+        {
+            break;
+        }
+        if (second == 0 && minute == 0)
+        {
+            minute = 60;
+            hour--;
+        }
+        if (second == 0)
+        {
+            second = 60;
+            minute--;
+        }
+        system("cls");
+        cout << "||" << hour << ":" << minute << ":" << second-- << "||";
+        Sleep(1000);
+    }
+}
+
+void Count_Down_Timer()
+{
+    int hour = 0 , minute = 0 , second = 0; 
+
+    cout << "Enter Hours: "; 
+    cin >> hour; 
+    cout << "Enter Minute: "; 
+    cin >> minute; 
+    cout << "Enter Second: ";
+    cin >> second;
+    system("cls");
+
+    for (;;) // Indefinet Loop 
+    {
+        if (hour == 0 && minute == 0 && second == 0)
+        {
+            break;
+        }
+        if (second == 0 && minute == 0)
+        {
+            minute = 60;
+            hour--;
+        }
+        if (second == 0)
+        {
+            second = 60;
+            minute--;
+        }
+        system("cls");
+        cout << "||" << hour << ":" << minute << ":" << second-- << "||";
+        Sleep(1000);
+    }
+}
