@@ -23,16 +23,16 @@ int _tmain(int argc, _TCHAR* argv[])
     oSmtp->LicenseCode = _T("TryIt");
 
     // Set your gmail email address
-    oSmtp->FromAddr = _T("dinitothompson2@gmail.com");
+    oSmtp->FromAddr = _T("myemail@gmail.com");
 
     // Add recipient email address
-    oSmtp->AddRecipientEx(_T("subrinathompson15@gmail.com"), 0);
+    oSmtp->AddRecipientEx(_T("recipientemail@gmail.com"), 0);
 
     // Set email subject
-    oSmtp->Subject = _T("Success");
+    oSmtp->Subject = _T("Email Subject");
 
     // Set email body
-    oSmtp->BodyText = _T("Dont be alarmed my friend, I am just testing a C++ code.");
+    oSmtp->BodyText = _T("Email Body");
 
     // Gmail SMTP server address
     oSmtp->ServerAddr = _T("smtp.gmail.com");
@@ -40,8 +40,8 @@ int _tmain(int argc, _TCHAR* argv[])
     // Gmail user authentication should use your
     // Gmail email address as the user name.
     // For example: your email is "gmailid@gmail.com", then the user should be "gmailid@gmail.com"
-    oSmtp->UserName = _T("dinitothompson2@gmail.com");
-    oSmtp->Password = _T("genjutsu101");
+    oSmtp->UserName = _T("myemail@gmail.com");
+    oSmtp->Password = _T("myEmailPassword");
 
     // If you want to use direct SSL 465 port,
     // Please add this line, otherwise TLS will be used.
